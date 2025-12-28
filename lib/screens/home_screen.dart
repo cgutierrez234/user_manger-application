@@ -35,13 +35,43 @@ class _HomeScreenState extends State<HomeScreen> {
             // return one widget per user
             return ListTile(
               title: Text(user.name),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  setState(() {
-                    users.removeAt(index);
-                  });
-                }
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children:[
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      setState(() {
+                        users.removeAt(index);
+                      });
+                    },
+                  ),
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed : () async {
+                        final updatedName = await Navigator.pushNamed(
+                          context,
+                          '/edit',
+                          arguments: user,
+                        );
+                        if(updatedName != null && updatedName is String) {
+                          setState(() {
+                            users[index] = User(id: users[index].id, name: updatedName);
+                          });
+                        }
+                      }
+                  ),
+                    IconButton(
+                      icon: const Icon(Icons.person),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/profile',
+                          arguments: user
+                        );
+                      }
+                    ),
+                ],
               ),
             );
           }

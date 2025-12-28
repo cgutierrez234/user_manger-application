@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:user_manager/screens/home_screen.dart';
 import 'package:user_manager/screens/add_user_screen.dart';
-// import 'package:user_manager/screens/edit_user_scrren.dart';
-// import 'package:user_manager/screens/profile_screen.dart';
+import 'package:user_manager/screens/edit_user_screen.dart';
+import 'package:user_manager/screens/profile_screen.dart';
 
 
 
@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => const HomeScreen(),
         '/add': (context) => const AddUserScreen(),
-        // '/edit': (context) => const EditUserScreen(),
-        // '/profile': (context) => const ProfileScreen(),
+        '/edit': (context) => const EditUserScreen(),
+        '/profile': (context) => const ProfileScreen(),
       },
     );
   }

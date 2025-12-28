@@ -1,4 +1,4 @@
-// This user model or class is pure dart language, doesn't need to import flutter shtuff. 
+// This user model or class is pure dart language, doesn't need to import flutter shtuff.   
 
 class User {
   final String id;
