@@ -20,28 +20,25 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
   void _saveUser() {
     final name = _controller.text.trim();
-    if(name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('ENTER A NAME'))
-      );
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('ENTER A NAME')));
       return;
     }
-    final newUser = User(id: const Uuid().v4(), name:name);
+    final newUser = User(id: const Uuid().v4(), name: name);
     Navigator.pop(context, newUser);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add User'),
-        centerTitle: true,
-      ),
-      body:Padding(
+      appBar: AppBar(title: const Text('Add User'), centerTitle: true),
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children:[
+          children: [
             TextField(
               controller: _controller,
               decoration: InputDecoration(
@@ -49,7 +46,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height:20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _saveUser,
               child: const Text('Save User'),

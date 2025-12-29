@@ -21,10 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Manager'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('User Manager'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
@@ -32,64 +29,96 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (context, index) {
             final user = users[index];
 
-            // return one widget per user
-            return ListTile(
-              title: Text(user.name),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children:[
+            // return one Card per user
+            return Card(
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ListTile(
+                leading: CircleAvatar(child: Text(user.name[0].toUpperCase())),
+                title: Text(user.name),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     IconButton(
                       icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      setState(() {
-                        users.removeAt(index);
-                      });
-                    },
-                  ),
+                      onPressed: () {
+                        setState(() {
+                          users.removeAt(index);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              margin: const EdgeInsets.all(12.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              content: Center(
+                                child: Text('User Deleted Successfully'),
+                              ),
+                            ),
+                          );
+                        });
+                      },
+                    ),
                     IconButton(
                       icon: const Icon(Icons.edit),
-                      onPressed : () async {
+                      onPressed: () async {
                         final updatedName = await Navigator.pushNamed(
                           context,
                           '/edit',
                           arguments: user,
                         );
-                        if(updatedName != null && updatedName is String) {
+                        if (updatedName != null && updatedName is String) {
                           setState(() {
-                            users[index] = User(id: users[index].id, name: updatedName);
+                            users[index] = User(
+                              id: users[index].id,
+                              name: updatedName,
+                            );
                           });
                         }
-                      }
-                  ),
+                      },
+                    ),
                     IconButton(
                       icon: const Icon(Icons.person),
                       onPressed: () {
                         Navigator.pushNamed(
                           context,
                           '/profile',
-                          arguments: user
+                          arguments: user,
                         );
-                      }
+                      },
                     ),
-                ],
+                  ],
+                ),
               ),
             );
-          }
+          },
         ),
       ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final newUser = await Navigator.pushNamed(context, '/add');
-          if(newUser != null && newUser is User) {
+          if (newUser != null && newUser is User) {
             setState(() {
               users.add(newUser);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  margin: const EdgeInsets.all(12.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  content: Center(child: Text('User Added Successfully')),
+                ),
+              );
             });
           }
         },
-        child:const Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
-
 }

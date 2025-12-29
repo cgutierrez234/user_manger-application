@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:user_manager/models/user.dart';
 
 class EditUserScreen extends StatefulWidget {
   const EditUserScreen({super.key});
@@ -11,7 +10,7 @@ class EditUserScreen extends StatefulWidget {
 class _EditUserScreenState extends State<EditUserScreen> {
   final TextEditingController _updatedUserController = TextEditingController();
 
-  @override 
+  @override
   void dispose() {
     _updatedUserController.dispose();
     super.dispose();
@@ -19,14 +18,9 @@ class _EditUserScreenState extends State<EditUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //final user = ModalRoute.of(context)!.settings.arguments as User; // <----- extracts the user data from the current instance of the route or screen we are on. Not needed right now
-
     return Scaffold(
-      appBar: AppBar(
-        title:const Text('Edit User'),
-        centerTitle: true,
-      ),
-      body:Padding(
+      appBar: AppBar(title: const Text('Edit User'), centerTitle: true),
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -40,19 +34,19 @@ class _EditUserScreenState extends State<EditUserScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                if(_updatedUserController.text.isEmpty) {
+                if (_updatedUserController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('You must enter an updated name'))
+                    const SnackBar(
+                      content: Text('You must enter an updated name'),
+                    ),
                   );
                   return;
                 } else {
                   final updatedUserName = _updatedUserController.text.trim();
-                  Navigator.pop(
-                    context, updatedUserName
-                  );
+                  Navigator.pop(context, updatedUserName);
                 }
               },
-            child: const Text('Save Changes'),
+              child: const Text('Save Changes'),
             ),
           ],
         ),
