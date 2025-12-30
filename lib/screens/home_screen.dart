@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:user_manager/models/user.dart';
+import '../db/database_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,7 +11,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _controller = TextEditingController();
+  final dbHelper = DatabaseHelper();
   List<User> users = [];
+
+  Future<void> _loadUsers() async {
+    final data = await dbHelper.getUsers();
+    setState(() {
+      users = data;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsers();
+  }
 
   @override
   void dispose() {
@@ -44,22 +59,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        setState(() {
-                          users.removeAt(index);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              behavior: SnackBarBehavior.floating,
-                              margin: const EdgeInsets.all(12.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              content: Center(
-                                child: Text('User Deleted Successfully'),
-                              ),
+                      onPressed: () async {
+                        await dbHelper.deleteUser(users[index].id);
+                        await _loadUsers();
+                        if (!mounted) return;
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            margin: const EdgeInsets.all(12.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          );
-                        });
+                            content: Center(
+                              child: Text('User Deleted Successfully'),
+                            ),
+                          ),
+                        );
                       },
                     ),
                     IconButton(
@@ -71,12 +87,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           arguments: user,
                         );
                         if (updatedName != null && updatedName is String) {
-                          setState(() {
-                            users[index] = User(
-                              id: users[index].id,
-                              name: updatedName,
-                            );
-                          });
+                          final updatedUser = User(
+                            id: users[index].id,
+                            name: updatedName,
+                          );
+                          await dbHelper.updateUser(updatedUser);
+                          await _loadUsers();
                         }
                       },
                     ),
@@ -102,19 +118,20 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () async {
           final newUser = await Navigator.pushNamed(context, '/add');
           if (newUser != null && newUser is User) {
-            setState(() {
-              users.add(newUser);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  margin: const EdgeInsets.all(12.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  content: Center(child: Text('User Added Successfully')),
+            await dbHelper.insertUser(newUser);
+            await _loadUsers();
+            if (!mounted) return;
+            // ignore: use_build_context_synchronously
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.all(12.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              );
-            });
+                content: Center(child: Text('User Added Successfully')),
+              ),
+            );
           }
         },
         child: const Icon(Icons.add),
